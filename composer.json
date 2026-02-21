@@ -37,6 +37,16 @@
             "DanfseNacional\\Tests\\": "tests/"
         }
     },
+    "archive": {
+        "exclude": [
+            "/examples",
+            "/schemas",
+            "/scripts",
+            "/tests",
+            "/.gitignore",
+            "/phpunit.xml"
+        ]
+    },
     "minimum-stability": "stable",
     "prefer-stable": true,
     "config": {
