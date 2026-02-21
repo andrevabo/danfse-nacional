@@ -247,7 +247,7 @@
                 </td>
                 <td colspan="2">
                     <span class="label">E-mail</span>
-                    <span class="value" style="font-size: 7pt"><?= $data['emitente']['email'] ?></span>
+                    <span class="value"><?= $data['emitente']['email'] ?></span>
                 </td>
             </tr>
             <tr>
