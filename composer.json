@@ -1,0 +1,46 @@
+{
+    "name": "andrevabo/danfse-nacional",
+    "description": "Gerador de PDF do DANFSe Nacional a partir do XML da NFS-e Padrão Nacional",
+    "keywords": ["danfse", "nfs-e", "nfse", "nfse-nacional", "danfe", "pdf", "nota-fiscal", "brazil"],
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "André R. Vabo",
+            "role": "Developer"
+        }
+    ],
+    "homepage": "https://github.com/andrevabo/danfse-nacional",
+    "support": {
+        "issues": "https://github.com/andrevabo/danfse-nacional/issues",
+        "source": "https://github.com/andrevabo/danfse-nacional"
+    },
+    "require": {
+        "php": "^8.1",
+        "ext-simplexml": "*",
+        "ext-mbstring": "*",
+        "ext-fileinfo": "*",
+        "dompdf/dompdf": "^3.0",
+        "cuyz/valinor": "^1.14",
+        "bacon/bacon-qr-code": "^3.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^11.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "DanfseNacional\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "DanfseNacional\\Tests\\": "tests/"
+        }
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true,
+    "config": {
+        "sort-packages": true,
+        "optimize-autoloader": true
+    }
+}

@@ -1,0 +1,8 @@
+/vendor/
+composer.lock
+/.idea/
+/.phpunit.result.cache
+
+# Saídas geradas pelos scripts de exemplo
+/examples/danfse_com_config.*
+/examples/danfse_simples.*

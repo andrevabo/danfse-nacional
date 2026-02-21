@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
+<NFSe versao="1.01" xmlns="http://www.sped.fazenda.gov.br/nfse">
+    <infNFSe Id="NFS3303302112233450000195000000000000100000000001">
+        <xLocEmi>Niterói</xLocEmi>
+        <xLocPrestacao>Niterói</xLocPrestacao>
+        <nNFSe>10</nNFSe>
+        <cLocIncid>3303302</cLocIncid>
+        <xLocIncid>Niterói</xLocIncid>
+        <xTribNac>Desenvolvimento e licenciamento de programas de computador customizáveis.</xTribNac>
+        <xTribMun>Desenvolvimento e licenciamento de programas de computador customizáveis.</xTribMun>
+        <verAplic>EXEMPLO_1.0.0</verAplic>
+        <ambGer>1</ambGer>
+        <tpEmis>1</tpEmis>
+        <procEmi>1</procEmi>
+        <cStat>100</cStat>
+        <dhProc>2026-01-15T14:30:00-03:00</dhProc>
+        <nDFSe>9900001</nDFSe>
+        <emit>
+            <CNPJ>11222333000181</CNPJ>
+            <xNome>EMPRESA EXEMPLO DESENVOLVIMENTO LTDA</xNome>
+            <enderNac>
+                <xLgr>Rua Visconde do Rio Branco</xLgr>
+                <nro>100</nro>
+                <xBairro>Centro</xBairro>
+                <cMun>3303302</cMun>
+                <UF>RJ</UF>
+                <CEP>24020005</CEP>
+            </enderNac>
+            <fone>2130001234</fone>
+            <email>financeiro@example.org</email>
+        </emit>
+        <valores>
+            <vLiq>1292.75</vLiq>
+        </valores>
+        <DPS xmlns="http://www.sped.fazenda.gov.br/nfse" versao="1.01">
+            <infDPS Id="DPS330330211222333000181202601000000000000005">
+                <tpAmb>2</tpAmb>
+                <dhEmi>2026-01-15T14:00:00-03:00</dhEmi>
+                <verAplic>EXEMPLO_1.0.0</verAplic>
+                <serie>20261</serie>
+                <nDPS>5</nDPS>
+                <dCompet>2026-01-15</dCompet>
+                <tpEmit>1</tpEmit>
+                <cLocEmi>3303302</cLocEmi>
+                <prest>
+                    <CNPJ>11222333000181</CNPJ>
+                    <fone>2130001234</fone>
+                    <email>financeiro@empresaexemplo.com.br</email>
+                    <regTrib>
+                        <opSimpNac>1</opSimpNac>
+                        <regEspTrib>6</regEspTrib>
+                    </regTrib>
+                </prest>
+                <toma>
+                    <CNPJ>91712343000134</CNPJ>
+                    <IM>654321</IM>
+                    <xNome>CLIENTE FICTICIO COMERCIO S.A.</xNome>
+                    <end>
+                        <endNac>
+                            <cMun>3550308</cMun>
+                            <CEP>01310100</CEP>
+                        </endNac>
+                        <xLgr>Avenida Paulista</xLgr>
+                        <nro>1000</nro>
+                        <xBairro>Bela Vista</xBairro>
+                    </end>
+                    <fone>11987654321</fone>
+                    <email>contato@clienteficticio.com.br</email>
+                </toma>
+                <interm>
+                    <CPF>77150344000101</CPF>
+                    <xNome>INTERMEDIARIO FICTICIO LTDA</xNome>
+                    <end>
+                        <endNac>
+                            <cMun>3518800</cMun>
+                            <CEP>07095130</CEP>
+                        </endNac>
+                        <xLgr>Rua Santa Conceição</xLgr>
+                        <nro>333</nro>
+                        <xBairro>Guarulhos</xBairro>
+                    </end>
+                    <fone>1133334444</fone>
+                    <email>contato@intermediarioficticio.com.br</email>
+                    <IMPrestMun>123456</IMPrestMun>
+                </interm>
+                <serv>
+                    <locPrest>
+                        <cLocPrestacao>3303302</cLocPrestacao>
+                    </locPrest>
+                    <cServ>
+                        <cTribNac>010700</cTribNac>
+                        <cTribMun>007</cTribMun>
+                        <xDescServ>Desenvolvimento de sistema de gestão empresarial - Contrato #2026-001</xDescServ>
+                    </cServ>
+                    <infoCompl>
+                        <xInfComp>Referente ao contrato de prestação de serviços nº 2026-001, firmado em 02/01/2026. Pagamento conforme cronograma acordado. Pedido de compra: PC-00123.</xInfComp>
+                    </infoCompl>
+                </serv>
+                <valores>
+                    <vServPrest>
+                        <vServ>1500.00</vServ>
+                    </vServPrest>
+                    <trib>
+                        <tribMun>
+                            <tribISSQN>1</tribISSQN>
+                            <tpRetISSQN>2</tpRetISSQN>
+                            <pAliq>2.00</pAliq>
+                            <vBC>1350.00</vBC>
+                            <vISSQN>27.00</vISSQN>
+                            <vDescCond>50.00</vDescCond>
+                            <vDescIncond>100.00</vDescIncond>
+                        </tribMun>
+                        <tribFed>
+                            <piscofins>
+                                <CST>01</CST>
+                                <vBCPisCofins>1500.00</vBCPisCofins>
+                                <pAliqPis>0.65</pAliqPis>
+                                <pAliqCofins>3.00</pAliqCofins>
+                                <vPis>9.75</vPis>
+                                <vCofins>45.00</vCofins>
+                            </piscofins>
+                            <vRetIRRF>22.50</vRetIRRF>
+                            <vRetCP>15.00</vRetCP>
+                            <vRetCSLL>15.00</vRetCSLL>
+                        </tribFed>
+                        <totTrib>
+                            <pTotTrib>
+                                <pTotTribFed>4.50</pTotTribFed>
+                                <pTotTribEst>0.10</pTotTribEst>
+                                <pTotTribMun>2.00</pTotTribMun>
+                            </pTotTrib>
+                        </totTrib>
+                    </trib>
+                </valores>
+            </infDPS>
+        </DPS>
+    </infNFSe>
+</NFSe>
