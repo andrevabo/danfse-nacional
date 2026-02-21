@@ -34,7 +34,7 @@
         </valores>
         <DPS xmlns="http://www.sped.fazenda.gov.br/nfse" versao="1.01">
             <infDPS Id="DPS330330211222333000181202601000000000000005">
-                <tpAmb>2</tpAmb>
+                <tpAmb>1</tpAmb>
                 <dhEmi>2026-01-15T14:00:00-03:00</dhEmi>
                 <verAplic>EXEMPLO_1.0.0</verAplic>
                 <serie>20261</serie>
