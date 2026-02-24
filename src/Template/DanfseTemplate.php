@@ -203,9 +203,7 @@ class DanfseTemplate
             'totais_tributos' => [
                 'federais' => $totTrib?->pTotTrib?->pTotTribFed ? $totTrib->pTotTrib->pTotTribFed . '%' : '-',
                 'estaduais' => $totTrib?->pTotTrib?->pTotTribEst ? $totTrib->pTotTrib->pTotTribEst . '%' : '-',
-                'municipais' => $totTrib?->pTotTrib?->pTotTribMun
-                    ? $totTrib->pTotTrib->pTotTribMun . '%'
-                    : ($totTrib?->pTotTribSN ? $totTrib->pTotTribSN . '%' : '-'),
+                'municipais' => $totTrib?->pTotTrib?->pTotTribMun ? $totTrib->pTotTrib->pTotTribMun . '%' : '-',
             ],
 
             'informacoes_complementares' => $serv?->infoCompl?->xInfComp ?? '',
