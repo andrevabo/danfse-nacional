@@ -126,7 +126,7 @@ class DanfseGeneratorTest extends TestCase
         $this->assertSame('Operação Tributável', $data['tributacao_municipal']['tributacao_issqn']);
         $this->assertSame('Retido pelo Tomador', $data['tributacao_municipal']['retencao_issqn']);
         $this->assertSame('Sociedade de Profissionais', $data['tributacao_municipal']['regime_especial']);
-        $this->assertSame('Niterói', $data['tributacao_municipal']['municipio_incidencia']);
+        $this->assertSame('Niterói - RJ', $data['tributacao_municipal']['municipio_incidencia']);
 
         // Emitente: Simples Nacional
         $this->assertSame(

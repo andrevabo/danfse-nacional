@@ -2,6 +2,8 @@
 
 namespace DanfseNacional\Dto;
 
+use DanfseNacional\Dto\IbsCbsNFSe\IbsCbs;
+
 readonly class InfNFSe
 {
     public function __construct(
@@ -23,6 +25,7 @@ readonly class InfNFSe
         public string $nDFSe = '',
         public ?Emitente $emit = null,
         public ?ValoresNFSe $valores = null,
+        public ?IbsCbs $IBSCBS = null,
         public ?Dps $DPS = null,
     ) {}
 }

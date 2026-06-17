@@ -2,6 +2,8 @@
 
 namespace DanfseNacional\Dto;
 
+use DanfseNacional\Dto\IbsCbsDps\IbsCbs;
+
 readonly class InfDPS
 {
     public function __construct(
@@ -19,5 +21,6 @@ readonly class InfDPS
         public ?Intermediario $interm = null,
         public ?Servico $serv = null,
         public ?Valores $valores = null,
+        public ?IbsCbs $IBSCBS = null,
     ) {}
 }
