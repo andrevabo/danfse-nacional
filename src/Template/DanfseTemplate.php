@@ -173,6 +173,7 @@ class DanfseTemplate
                 'aliquota' => $this->fmt->percentage($valoresNfse?->pAliqAplic ?? $tribMun?->pAliq ?? null),
                 'retencao_issqn' => TpRetISSQN::labelFor($tribMun?->tpRetISSQN ?? ''),
                 'issqn_apurado' => $this->fmt->currency($valoresNfse?->vISSQN ?? $tribMun?->vISSQN ?? null),
+                'beneficio_municipal' => $tribMun->BM?->nBM ?? null,
             ],
 
             'tributacao_federal' => [

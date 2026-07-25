@@ -6,6 +6,7 @@ readonly class TribMunicipal
 {
     public function __construct(
         public string $tribISSQN = '',
+        public ?BM $BM = null,
         public string $tpRetISSQN = '',
         public string $pAliq = '',
         public string $vBC = '',
