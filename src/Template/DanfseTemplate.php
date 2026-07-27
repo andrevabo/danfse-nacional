@@ -13,8 +13,9 @@ use DanfseNacional\Enums\RegApTribSN;
 use DanfseNacional\Enums\RegEspTrib;
 use DanfseNacional\Enums\TpRetISSQN;
 use DanfseNacional\Enums\TribISSQN;
-use DanfseNacional\Data\Municipios;
 use DanfseNacional\Enums\TpRetPisCofins;
+use DanfseNacional\Data\Municipios;
+use DanfseNacional\Data\BeneficiosMunicipais;
 use DanfseNacional\Formatter;
 
 /**
@@ -173,6 +174,10 @@ class DanfseTemplate
                 'aliquota' => $this->fmt->percentage($valoresNfse?->pAliqAplic ?? $tribMun?->pAliq ?? null),
                 'retencao_issqn' => TpRetISSQN::labelFor($tribMun?->tpRetISSQN ?? ''),
                 'issqn_apurado' => $this->fmt->currency($valoresNfse?->vISSQN ?? $tribMun?->vISSQN ?? null),
+                // 'beneficio_municipal' => BeneficiosMunicipais::lookup(
+                //     $inf?->cLocIncid ?? $locPrest?->cLocPrestacao,
+                //     $tribMun->BM?->nBM ?? null
+                // ),
                 'beneficio_municipal' => $tribMun->BM?->nBM ?? null,
             ],
 
