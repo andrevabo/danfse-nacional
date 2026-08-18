@@ -832,4 +832,71 @@ class DanfseGeneratorTest extends TestCase
 
         $this->assertStringNotContainsString('Município: Niterói / RJ', $html);
     }
+
+    // ── Tributação municipal apurada pelo município (NT 008/2026) ─────────────
+
+    /**
+     * A NT 008/2026 define a origem destes campos no XML:
+     *
+     *   BC ISSQN           NFSe/infNFSe/valores/   vBC
+     *   ALÍQUOTA APLICADA  NFSe/infNFSe/valores/   pAliqAplic
+     *   ISSQN APURADO      NFSe/infNFSe/valores/   vISSQN
+     *
+     * (Apenas RETENÇÃO DO ISSQN vem de NFSe/infNFSe/DPS/infDPS/valores/trib/tribMun/.)
+     *
+     * Os dois XML de exemplo do repositório trazem vBC/vISSQN dentro do `tribMun` do
+     * DPS e um `infNFSe/valores` com apenas `vLiq`, então a leitura pelo `tribMun`
+     * funciona para eles. Em NFS-e em que o MUNICÍPIO apura o imposto — caso comum em
+     * São Paulo, por exemplo — o `tribMun` declara somente `pAliq`, e os valores
+     * apurados ficam em `infNFSe/valores`. Nesse cenário o DANFSe saía com "-" na base
+     * de cálculo e no ISSQN apurado.
+     *
+     * @see https://www.gov.br/nfse/pt-br/biblioteca/documentacao-tecnica/rtc/nt-008-se-cgnfse-danfse-20260505.pdf
+     */
+    public function test_issqn_apurado_pelo_municipio_vem_de_infnfse_valores(): void
+    {
+        $data = (new \DanfseNacional\Template\DanfseTemplate())
+            ->buildData((new DanfseGenerator())->parseXml($this->realXml));
+
+        $this->assertSame('R$ 1.350,00', $data['tributacao_municipal']['bc_issqn']);
+        $this->assertSame('2.00%', $data['tributacao_municipal']['aliquota']);
+        $this->assertSame('R$ 27,00', $data['tributacao_municipal']['issqn_apurado']);
+    }
+
+    /**
+     * A retenção continua vindo do `tribMun` do DPS, como manda a norma.
+     */
+    public function test_retencao_issqn_continua_vindo_do_tribmun_do_dps(): void
+    {
+        $data = (new \DanfseNacional\Template\DanfseTemplate())
+            ->buildData((new DanfseGenerator())->parseXml($this->realXml));
+
+        $this->assertNotSame('-', $data['tributacao_municipal']['retencao_issqn']);
+    }
+
+    /**
+     * `serv/locPrest` é opcional no XML. A leitura era feita sem null-safe
+     * (`$locPrest->cLocPrestacao`), diferente da expressão vizinha
+     * (`$locPrest?->cPaisPrestacao`), então um XML sem o bloco emitia
+     * "Attempt to read property on null".
+     *
+     * Em aplicações Laravel isso não é apenas um aviso: o handler de erros converte
+     * PHP Warning em ErrorException, e a geração do DANFSe falhava por completo.
+     */
+    public function test_xml_sem_locprest_nao_emite_warning(): void
+    {
+        $xml = preg_replace('#\s*<locPrest>.*?</locPrest>#s', '', $this->realXml);
+
+        set_error_handler(static function (int $severity, string $message): bool {
+            throw new \ErrorException($message, 0, $severity);
+        });
+
+        try {
+            $pdf = (new DanfseGenerator())->generateFromXml($xml);
+        } finally {
+            restore_error_handler();
+        }
+
+        $this->assertStringStartsWith('%PDF', $pdf);
+    }
 }

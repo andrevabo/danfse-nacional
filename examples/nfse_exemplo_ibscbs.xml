@@ -31,6 +31,9 @@
             <email>financeiro@example.org</email>
         </emit>
         <valores>
+            <vBC>1350.00</vBC>
+            <pAliqAplic>2.00</pAliqAplic>
+            <vISSQN>27.00</vISSQN>
             <vLiq>1292.75</vLiq>
         </valores>
         <IBSCBS>
@@ -155,8 +158,6 @@
                             <tribISSQN>1</tribISSQN>
                             <tpRetISSQN>2</tpRetISSQN>
                             <pAliq>2.00</pAliq>
-                            <vBC>1350.00</vBC>
-                            <vISSQN>27.00</vISSQN>
                             <vDescCond>50.00</vDescCond>
                             <vDescIncond>100.00</vDescIncond>
                             <cPaisResult>BR</cPaisResult>

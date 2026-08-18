@@ -21,6 +21,7 @@ use DanfseNacional\Dto\TotTrib;
 use DanfseNacional\Dto\TribFederal;
 use DanfseNacional\Dto\TribMunicipal;
 use DanfseNacional\Dto\ValoresIbsCbs;
+use DanfseNacional\Dto\ValoresNFSe;
 use DanfseNacional\Enums\AmbGerador;
 use DanfseNacional\Enums\FinNFSe;
 use DanfseNacional\Enums\OpSimpNac;
@@ -146,7 +147,7 @@ class DanfseTemplate
 
         // Bloco de Tributação IBS/CBS (somente quando há grupo IBS/CBS no XML).
         $ibsCbs = ($ibsCbsNfse !== null || $ibsCbsDps !== null)
-            ? $this->buildIbsCbs($gIBSCBS, $ibsCbsDps, $ibsCbsNfse, $valIbs, $totC, $tribMun, $tribFed)
+            ? $this->buildIbsCbs($gIBSCBS, $ibsCbsDps, $ibsCbsNfse, $valIbs, $totC, $tribMun, $tribFed, $valoresNfse)
             : null;
 
         // Nota 6 (NT-008): PIS, COFINS e Descrição Contrib. Sociais - Retidas só
@@ -219,7 +220,7 @@ class DanfseTemplate
                 'codigo_trib_municipal' => $cServ?->cTribMun ?? '-',
                 'desc_trib' => $this->fmt->limit(!empty($inf?->xTribMun) ? $inf?->xTribMun : $inf?->xTribNac, 170),
                 'codigo_nbs' => $this->fmt->codigoNbs($cServ?->cNBS ?: '-'),
-                'local_prestacao' => (Municipios::lookup($locPrest->cLocPrestacao) ?: '-') . ' / ' . ($locPrest?->cPaisPrestacao ?? '-'),
+                'local_prestacao' => (Municipios::lookup($locPrest?->cLocPrestacao ?? '') ?: '-') . ' / ' . ($locPrest?->cPaisPrestacao ?? '-'),
                 'descricao' => $this->fmt->limit($cServ?->xDescServ ?? '-', 1300),
             ],
 
@@ -245,10 +246,14 @@ class DanfseTemplate
                 'desconto_incondicionado' => $tribMun?->vDescIncond ? $this->fmt->currency($tribMun->vDescIncond) : '',
                 // Linha 4  ──────────
                 'valor_servico' => $this->fmt->currency($vServPrest?->vServ ?? ''),
-                'bc_issqn' => $tribMun?->vBC ? $this->fmt->currency($tribMun->vBC) : '-',
-                'aliquota' => $tribMun?->pAliq ? $tribMun->pAliq . '%' : '-',
+                // NT 008/2026: BC ISSQN, ALÍQUOTA APLICADA e ISSQN APURADO saem de
+                // NFSe/infNFSe/valores/ (vBC, pAliqAplic, vISSQN); só a RETENÇÃO sai do
+                // tribMun do DPS. Quando o município apura o imposto, o tribMun declara
+                // apenas pAliq e os valores ficam em infNFSe/valores.
+                'bc_issqn' => $valoresNfse?->vBC ? $this->fmt->currency($valoresNfse->vBC) : '-',
+                'aliquota' => $valoresNfse?->pAliqAplic ? $valoresNfse->pAliqAplic . '%' : '-',
                 'retencao_issqn' => TpRetISSQN::labelFor($tribMun?->tpRetISSQN ?? ''),
-                'issqn_apurado' => $tribMun?->vISSQN ? $this->fmt->currency($tribMun->vISSQN) : '-',
+                'issqn_apurado' => $valoresNfse?->vISSQN ? $this->fmt->currency($valoresNfse->vISSQN) : '-',
             ],
 
             'tributacao_federal' => [
@@ -391,6 +396,7 @@ class DanfseTemplate
         ?TotCIbs $tot,
         ?TribMunicipal $tribMun,
         ?TribFederal $tribFed,
+        ?ValoresNFSe $valoresNfse,
     ): array {
         $uf = $val?->uf;
         $mun = $val?->mun;
@@ -415,7 +421,7 @@ class DanfseTemplate
             'exclusoes_reducoes' => $this->sumCurrency(
                 $tribMun?->vDescIncond ?? '',
                 $val?->vCalcReeRepRes ?? '',
-                $tribMun?->vISSQN ?? '',
+                $valoresNfse?->vISSQN ?? '',
                 $tribFed?->piscofins?->vPis ?? '',
                 $tribFed?->piscofins?->vCofins ?? '',
             ),
