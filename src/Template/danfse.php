@@ -759,7 +759,7 @@ $tm = $data['tributacao_municipal'] ?? null;
                 </td>
                 <td style="width: 25%;">
                     <span class="label">VALOR LÍQUIDO DA NFS-e</span>
-                    <span class="value" style="font-weight: bold;"><?= $data['totais']['valor_liquido'] ?></span>
+                    <span class="value"><?= $data['totais']['valor_liquido'] ?></span>
                 </td>
                 <td style="width: 25%;">
                     <span class="label">Total do IBS/CBS</span>
