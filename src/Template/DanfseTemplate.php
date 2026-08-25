@@ -286,12 +286,10 @@ class DanfseTemplate
                 ),
                 'valor_liquido' => $this->fmt->currency($valoresNfse?->vLiq ?? ''),
                 'total_ibs_cbs' => $this->sumCurrency(
-                    $totC?->gIBS?->vIBSTot ?? '',
-                    $totC?->gCBS?->vCBS ?? '',
+                    $totC?->gIBS?->vIBSTot ?? 0,
+                    $totC?->gCBS?->vCBS ?? 0,
                 ),
-                'valor_liquido_ibscbs' => ($totC?->vTotNF ?? '') !== ''
-                    ? $this->fmt->currency($totC->vTotNF)
-                    : '-',
+                'valor_liquido_ibscbs' => $this->fmt->currency($totC->vTotNF ?? 0),
             ],
 
             'informacoes_complementares' => $this->buildInfoComplementares(
