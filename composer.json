@@ -22,7 +22,7 @@
         "ext-mbstring": "*",
         "ext-fileinfo": "*",
         "dompdf/dompdf": "^3.0",
-        "cuyz/valinor": "^1.14",
+        "cuyz/valinor": "^1.14 || ^2.3",
         "bacon/bacon-qr-code": "^3.0"
     },
     "require-dev": {
