@@ -448,6 +448,53 @@ class DanfseGeneratorTest extends TestCase
         $this->assertSame('PIS/COFINS Não Retido', $data['tributacao_federal']['desc_contrib_sociais']);
     }
 
+    public function test_tributacao_federal_descricao_das_dez_opcoes_de_tpretpiscofins(): void
+    {
+        // Leiaute atual (NT 009): tpRetPisCofins aceita os códigos 0 a 9.
+        $esperado = [
+            '0' => 'PIS/COFINS/CSLL Não Retidos',
+            '1' => 'PIS/COFINS Retido',
+            '2' => 'PIS/COFINS Não Retido',
+            '3' => 'PIS/COFINS/CSLL Retidos',
+            '4' => 'PIS/COFINS Retidos, CSLL Não Retido',
+            '5' => 'PIS Retido, COFINS/CSLL Não Retido',
+            '6' => 'COFINS Retido, PIS/CSLL Não Retido',
+            '7' => 'PIS Não Retido, COFINS/CSLL Retidos',
+            '8' => 'PIS/COFINS Não Retidos, CSLL Retido',
+            '9' => 'COFINS Não Retido, PIS/CSLL Retidos',
+        ];
+
+        $generator = new DanfseGenerator();
+        $template = new \DanfseNacional\Template\DanfseTemplate();
+
+        foreach ($esperado as $codigo => $descricao) {
+            $xml = str_replace(
+                '<tpRetPisCofins>2</tpRetPisCofins>',
+                "<tpRetPisCofins>{$codigo}</tpRetPisCofins>",
+                $this->realXml,
+            );
+            $data = $template->buildData($generator->parseXml($xml));
+
+            $this->assertSame($descricao, $data['tributacao_federal']['desc_contrib_sociais'], "tpRetPisCofins = {$codigo}");
+        }
+    }
+
+    public function test_tributacao_federal_pis_cofins_csll_retidos(): void
+    {
+        // tpRetPisCofins = 3 (PIS/COFINS/CSLL Retidos): vRetCSLL já traz a soma
+        // das três contribuições, então "Contribuições Sociais - Retidas" mostra
+        // o vRetCSLL e a descrição deixa de sair "-".
+        $xml = str_replace('<tpRetPisCofins>2</tpRetPisCofins>', '<tpRetPisCofins>3</tpRetPisCofins>', $this->realXml);
+
+        $generator = new DanfseGenerator();
+        $nfse = $generator->parseXml($xml);
+        $data = (new \DanfseNacional\Template\DanfseTemplate())->buildData($nfse);
+
+        $this->assertSame('R$ 15,00', $data['tributacao_federal']['contrib_sociais']);
+        $this->assertSame('PIS/COFINS/CSLL Retidos', $data['tributacao_federal']['desc_contrib_sociais']);
+        $this->assertStringContainsString('PIS/COFINS/CSLL Retidos', $generator->generateHtml($nfse));
+    }
+
     // ── Totais ────────────────────────────────────────────────────────────────
 
     public function test_totais_descontos_e_retencoes(): void
