@@ -122,8 +122,9 @@ class DanfseTemplate
 
         $endDest = $dest?->end;
 
-        // Finalidade só é exibida quando informada no XML (grupo IBS/CBS).
-        $finNFSe = $ibsCbsDps?->finNFSe ?? '';
+        // Finalidade só é exibida quando informada no XML. A partir da NT 009 o
+        // finNFSe fica em infDPS; o grupo IBS/CBS continua lido para XMLs antigos.
+        $finNFSe = ($infDps?->finNFSe ?? '') !== '' ? $infDps->finNFSe : ($ibsCbsDps?->finNFSe ?? '');
 
         // Destinatário: bloco com dados ou mensagem de supressão (Notas 2 e 3).
         $indDest = $ibsCbsDps?->indDest ?? '';

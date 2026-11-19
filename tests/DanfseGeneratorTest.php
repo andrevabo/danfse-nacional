@@ -160,6 +160,24 @@ class DanfseGeneratorTest extends TestCase
         $this->assertSame('NFS-e regular', $data['finalidade']);
     }
 
+    public function test_finalidade_lida_de_infdps_nt009(): void
+    {
+        // NT 009: finNFSe passa a ser filho direto de infDPS, entre tpEmit e cLocEmi.
+        $xml = str_replace(
+            '<cLocEmi>3303302</cLocEmi>',
+            '<finNFSe>0</finNFSe><cLocEmi>3303302</cLocEmi>',
+            $this->realXml,
+        );
+
+        $generator = new DanfseGenerator();
+        $nfse = $generator->parseXml($xml);
+        $data = (new \DanfseNacional\Template\DanfseTemplate())->buildData($nfse);
+
+        $this->assertSame('0', $nfse->infNFSe->DPS->infDPS->finNFSe);
+        $this->assertSame('NFS-e regular', $data['finalidade']);
+        $this->assertStringContainsString('NFS-e regular', $generator->generateHtml($nfse));
+    }
+
     public function test_destinatario_nao_identificado_sem_ibscbs(): void
     {
         // XML v1.01 sem grupo IBS/CBS: destinatário deve cair na mensagem padrão.
