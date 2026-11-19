@@ -102,6 +102,8 @@ class DanfseGeneratorTest extends TestCase
         $this->assertSame('-', $data['finalidade']); // finNFSe ausente no XML v1.01
 
         $this->assertSame(AmbGerador::SISTEMA_NACIONAL->value, $data['amb_gerador']);
+        $this->assertSame('Sistema Nacional da NFS-e', $data['amb_gerador_descricao']);
+        $this->assertSame('Produção', $data['ambiente_descricao']);
 
         // Prestador
         $this->assertSame('11.222.333/0001-81', $data['prestador']['cnpj_cpf']);
@@ -158,6 +160,24 @@ class DanfseGeneratorTest extends TestCase
         $data = $template->buildData($nfse);
 
         $this->assertSame('NFS-e regular', $data['finalidade']);
+    }
+
+    public function test_finalidade_lida_de_infdps_nt009(): void
+    {
+        // NT 009: finNFSe passa a ser filho direto de infDPS, entre tpEmit e cLocEmi.
+        $xml = str_replace(
+            '<cLocEmi>3303302</cLocEmi>',
+            '<finNFSe>0</finNFSe><cLocEmi>3303302</cLocEmi>',
+            $this->realXml,
+        );
+
+        $generator = new DanfseGenerator();
+        $nfse = $generator->parseXml($xml);
+        $data = (new \DanfseNacional\Template\DanfseTemplate())->buildData($nfse);
+
+        $this->assertSame('0', $nfse->infNFSe->DPS->infDPS->finNFSe);
+        $this->assertSame('NFS-e regular', $data['finalidade']);
+        $this->assertStringContainsString('NFS-e regular', $generator->generateHtml($nfse));
     }
 
     public function test_destinatario_nao_identificado_sem_ibscbs(): void
@@ -319,6 +339,7 @@ class DanfseGeneratorTest extends TestCase
         $data = $template->buildData($nfse);
 
         $this->assertSame(2, $data['ambiente']);
+        $this->assertSame('Homologação', $data['ambiente_descricao']);
     }
 
     public function test_tamanho_do_pdf_gerado_e_razoavel(): void
@@ -428,6 +449,53 @@ class DanfseGeneratorTest extends TestCase
         $this->assertSame('R$ 9,75', $data['tributacao_federal']['pis']);
         $this->assertSame('R$ 45,00', $data['tributacao_federal']['cofins']);
         $this->assertSame('PIS/COFINS Não Retido', $data['tributacao_federal']['desc_contrib_sociais']);
+    }
+
+    public function test_tributacao_federal_descricao_das_dez_opcoes_de_tpretpiscofins(): void
+    {
+        // Leiaute atual (NT 009): tpRetPisCofins aceita os códigos 0 a 9.
+        $esperado = [
+            '0' => 'PIS/COFINS/CSLL Não Retidos',
+            '1' => 'PIS/COFINS Retido',
+            '2' => 'PIS/COFINS Não Retido',
+            '3' => 'PIS/COFINS/CSLL Retidos',
+            '4' => 'PIS/COFINS Retidos, CSLL Não Retido',
+            '5' => 'PIS Retido, COFINS/CSLL Não Retido',
+            '6' => 'COFINS Retido, PIS/CSLL Não Retido',
+            '7' => 'PIS Não Retido, COFINS/CSLL Retidos',
+            '8' => 'PIS/COFINS Não Retidos, CSLL Retido',
+            '9' => 'COFINS Não Retido, PIS/CSLL Retidos',
+        ];
+
+        $generator = new DanfseGenerator();
+        $template = new \DanfseNacional\Template\DanfseTemplate();
+
+        foreach ($esperado as $codigo => $descricao) {
+            $xml = str_replace(
+                '<tpRetPisCofins>2</tpRetPisCofins>',
+                "<tpRetPisCofins>{$codigo}</tpRetPisCofins>",
+                $this->realXml,
+            );
+            $data = $template->buildData($generator->parseXml($xml));
+
+            $this->assertSame($descricao, $data['tributacao_federal']['desc_contrib_sociais'], "tpRetPisCofins = {$codigo}");
+        }
+    }
+
+    public function test_tributacao_federal_pis_cofins_csll_retidos(): void
+    {
+        // tpRetPisCofins = 3 (PIS/COFINS/CSLL Retidos): vRetCSLL já traz a soma
+        // das três contribuições, então "Contribuições Sociais - Retidas" mostra
+        // o vRetCSLL e a descrição deixa de sair "-".
+        $xml = str_replace('<tpRetPisCofins>2</tpRetPisCofins>', '<tpRetPisCofins>3</tpRetPisCofins>', $this->realXml);
+
+        $generator = new DanfseGenerator();
+        $nfse = $generator->parseXml($xml);
+        $data = (new \DanfseNacional\Template\DanfseTemplate())->buildData($nfse);
+
+        $this->assertSame('R$ 15,00', $data['tributacao_federal']['contrib_sociais']);
+        $this->assertSame('PIS/COFINS/CSLL Retidos', $data['tributacao_federal']['desc_contrib_sociais']);
+        $this->assertStringContainsString('PIS/COFINS/CSLL Retidos', $generator->generateHtml($nfse));
     }
 
     // ── Totais ────────────────────────────────────────────────────────────────
@@ -699,7 +767,23 @@ class DanfseGeneratorTest extends TestCase
         );
 
         $this->assertStringNotContainsString('NFS-e SEM VALIDADE JURÍDICA', $html);
-        $this->assertStringContainsString('Tipo de Ambiente: 1', $html);
+        $this->assertStringContainsString('Tipo de Ambiente: Produção', $html);
+    }
+
+    public function test_html_ambiente_gerador_e_tipo_de_ambiente_por_descricao(): void
+    {
+        $generator = new DanfseGenerator();
+
+        $producao = $generator->generateHtml($generator->parseXml($this->realXml));
+        $this->assertStringContainsString('Ambiente Gerador: Sistema Nacional da NFS-e', $producao);
+        $this->assertStringContainsString('Tipo de Ambiente: Produção', $producao);
+        $this->assertStringNotContainsString('Ambiente Gerador: 2', $producao);
+
+        $xml = str_replace('<tpAmb>1</tpAmb>', '<tpAmb>2</tpAmb>', $this->realXml);
+        $xml = str_replace('<ambGer>2</ambGer>', '<ambGer>1</ambGer>', $xml);
+        $homologacao = $generator->generateHtml($generator->parseXml($xml));
+        $this->assertStringContainsString('Ambiente Gerador: Prefeitura', $homologacao);
+        $this->assertStringContainsString('Tipo de Ambiente: Homologação', $homologacao);
     }
 
     public function test_html_destinatario_identificado_renderiza_bloco(): void

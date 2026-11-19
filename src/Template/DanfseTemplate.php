@@ -28,6 +28,7 @@ use DanfseNacional\Enums\OpSimpNac;
 use DanfseNacional\Enums\RegApTribSN;
 use DanfseNacional\Enums\RegEspTrib;
 use DanfseNacional\Enums\SituacaoNFSe;
+use DanfseNacional\Enums\TipoAmbiente;
 use DanfseNacional\Enums\TpBM;
 use DanfseNacional\Enums\TpEmitente;
 use DanfseNacional\Enums\TpExigSusp;
@@ -122,8 +123,9 @@ class DanfseTemplate
 
         $endDest = $dest?->end;
 
-        // Finalidade só é exibida quando informada no XML (grupo IBS/CBS).
-        $finNFSe = $ibsCbsDps?->finNFSe ?? '';
+        // Finalidade só é exibida quando informada no XML. A partir da NT 009 o
+        // finNFSe fica em infDPS; o grupo IBS/CBS continua lido para XMLs antigos.
+        $finNFSe = ($infDps?->finNFSe ?? '') !== '' ? $infDps->finNFSe : ($ibsCbsDps?->finNFSe ?? '');
 
         // Destinatário: bloco com dados ou mensagem de supressão (Notas 2 e 3).
         $indDest = $ibsCbsDps?->indDest ?? '';
@@ -165,6 +167,9 @@ class DanfseTemplate
             'emissao_dps' => $this->fmt->dateTime($infDps?->dhEmi ?? ''),
             'ambiente' => (int) ($infDps?->tpAmb ?? 1),
             'amb_gerador' => (int) ($inf?->ambGer ?? ''),
+            // Cabeçalho exibe a descrição do código (XSD), não o código.
+            'ambiente_descricao' => TipoAmbiente::labelFor($infDps?->tpAmb ?? ''),
+            'amb_gerador_descricao' => AmbGerador::labelFor($inf?->ambGer ?? ''),
             'tipo_emitente' => TpEmitente::labelFor($infDps?->tpEmit ?? ''),
             // Situação (cStat) é obrigatória; Finalidade (finNFSe) é condicional.
             'situacao' => ($inf?->cStat ?? '') !== '' ? SituacaoNFSe::labelFor($inf->cStat) : '',
