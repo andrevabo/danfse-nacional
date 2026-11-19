@@ -102,6 +102,8 @@ class DanfseGeneratorTest extends TestCase
         $this->assertSame('-', $data['finalidade']); // finNFSe ausente no XML v1.01
 
         $this->assertSame(AmbGerador::SISTEMA_NACIONAL->value, $data['amb_gerador']);
+        $this->assertSame('Sistema Nacional da NFS-e', $data['amb_gerador_descricao']);
+        $this->assertSame('Produção', $data['ambiente_descricao']);
 
         // Prestador
         $this->assertSame('11.222.333/0001-81', $data['prestador']['cnpj_cpf']);
@@ -337,6 +339,7 @@ class DanfseGeneratorTest extends TestCase
         $data = $template->buildData($nfse);
 
         $this->assertSame(2, $data['ambiente']);
+        $this->assertSame('Homologação', $data['ambiente_descricao']);
     }
 
     public function test_tamanho_do_pdf_gerado_e_razoavel(): void
@@ -764,7 +767,23 @@ class DanfseGeneratorTest extends TestCase
         );
 
         $this->assertStringNotContainsString('NFS-e SEM VALIDADE JURÍDICA', $html);
-        $this->assertStringContainsString('Tipo de Ambiente: 1', $html);
+        $this->assertStringContainsString('Tipo de Ambiente: Produção', $html);
+    }
+
+    public function test_html_ambiente_gerador_e_tipo_de_ambiente_por_descricao(): void
+    {
+        $generator = new DanfseGenerator();
+
+        $producao = $generator->generateHtml($generator->parseXml($this->realXml));
+        $this->assertStringContainsString('Ambiente Gerador: Sistema Nacional da NFS-e', $producao);
+        $this->assertStringContainsString('Tipo de Ambiente: Produção', $producao);
+        $this->assertStringNotContainsString('Ambiente Gerador: 2', $producao);
+
+        $xml = str_replace('<tpAmb>1</tpAmb>', '<tpAmb>2</tpAmb>', $this->realXml);
+        $xml = str_replace('<ambGer>2</ambGer>', '<ambGer>1</ambGer>', $xml);
+        $homologacao = $generator->generateHtml($generator->parseXml($xml));
+        $this->assertStringContainsString('Ambiente Gerador: Prefeitura', $homologacao);
+        $this->assertStringContainsString('Tipo de Ambiente: Homologação', $homologacao);
     }
 
     public function test_html_destinatario_identificado_renderiza_bloco(): void

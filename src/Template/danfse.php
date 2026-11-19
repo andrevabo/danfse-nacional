@@ -213,8 +213,8 @@ $tm = $data['tributacao_municipal'] ?? null;
                 </table>
                 <?php endif; ?>
                 <div style="font-size: 6pt; padding-top: 1pt;">
-                    Ambiente Gerador: <?= $data['amb_gerador'] ?><br>
-                    Tipo de Ambiente: <?= $data['ambiente'] ?>
+                    Ambiente Gerador: <?= $data['amb_gerador_descricao'] ?><br>
+                    Tipo de Ambiente: <?= $data['ambiente_descricao'] ?>
                 </div>
             </td>
         </tr>

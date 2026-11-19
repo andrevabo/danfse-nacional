@@ -28,6 +28,7 @@ use DanfseNacional\Enums\OpSimpNac;
 use DanfseNacional\Enums\RegApTribSN;
 use DanfseNacional\Enums\RegEspTrib;
 use DanfseNacional\Enums\SituacaoNFSe;
+use DanfseNacional\Enums\TipoAmbiente;
 use DanfseNacional\Enums\TpBM;
 use DanfseNacional\Enums\TpEmitente;
 use DanfseNacional\Enums\TpExigSusp;
@@ -166,6 +167,9 @@ class DanfseTemplate
             'emissao_dps' => $this->fmt->dateTime($infDps?->dhEmi ?? ''),
             'ambiente' => (int) ($infDps?->tpAmb ?? 1),
             'amb_gerador' => (int) ($inf?->ambGer ?? ''),
+            // Cabeçalho exibe a descrição do código (XSD), não o código.
+            'ambiente_descricao' => TipoAmbiente::labelFor($infDps?->tpAmb ?? ''),
+            'amb_gerador_descricao' => AmbGerador::labelFor($inf?->ambGer ?? ''),
             'tipo_emitente' => TpEmitente::labelFor($infDps?->tpEmit ?? ''),
             // Situação (cStat) é obrigatória; Finalidade (finNFSe) é condicional.
             'situacao' => ($inf?->cStat ?? '') !== '' ? SituacaoNFSe::labelFor($inf->cStat) : '',
